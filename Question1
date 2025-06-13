@@ -1,1 +1,519 @@
+// اصل اول SOLID:
+
+// Single Responsibility
+
+public class WrongEmployee
+
+{
+
+    public int Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public double HourlyRate { get; set; }
+
+    public int HoursWorked { get; set; }
+
+
+
+
+
+    public double CalculateSalary()
+
+    {
+
+        return HourlyRate * HoursWorked;
+
+    }
+
+
+
+    public void SaveToDatabase()
+
+    {
+
+        Console.WriteLine("Saving to database...");
+
+    }
+
+}
+
+// طبق اصل 
+
+// Single Responsibility
+
+// هر کلاس فقط باید یک وظیفه داشته باشه و فقط یک دلیل برای تغییرش وجود داشته باشه.
+
+// ولی در این مثال, کلاس
+
+// WrongEmployee
+
+// سه وظیفه (نگهداری اطلاعات, محاسبه حقوق و ذخیره در پایگاه داده) داره
+
+// که باعث نقض این اصل میشه. به همین دلیل بهتره که به صورت زیر نوشته بشه
+
+
+
+public class CorrectEmployee
+
+{
+
+    public int Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public double HourlyRate { get; set; }
+
+    public int HoursWorked { get; set; }
+
+}
+
+public class SalaryCalculator
+
+{
+
+    public double CalculateSalary(CorrectEmployee employee)
+
+    {
+
+        return employee.HourlyRate * employee.HoursWorked;
+
+    }
+
+}
+
+public class EmployeeRepository
+
+{
+
+    public void SaveToDatabase(CorrectEmployee employee)
+
+    {
+
+        Console.WriteLine("Saving to database...");
+
+    }
+
+}
+
+// اینجوری هر کلاس فقط یک مسئولیت داره و اگر در آینده تغییری نیاز بود، فقط کلاس مرتبط تغییر می‌کنه
+
+// این روش باعث افزایش خوانایی، قابلیت نگهداری و توسعه‌پذیری برنامه می‌شه
+
+
+
+
+
+// اصل دوم SOLID:
+
+// Open And Close 
+
+public abstract class Animal
+
+{
+
+    public abstract string Voice();
+
+}
+
+public class Cat : Animal
+
+{
+
+    public override string Voice() => "mio";
+
+}
+
+public class Cow : Animal
+
+{
+
+    public override string Voice() => "ma";
+
+}
+
+// در این مثال طبق اصل
+
+// Open And Close 
+
+// می تونیم بدون اینکه کلاس های موجود رو تغییر بدیم کلاس های دیگه ای رو هم اضافه کنیم و برنامه رو توسعه بدیم
+
+
+
+
+
+// اصل سوم SOLID:
+
+// Liskov
+
+public class Bird
+
+{
+
+    public virtual void Fly()
+
+    {
+
+        Console.WriteLine("Flying...");
+
+    }
+
+}
+
+public class Sparrow : Bird
+
+{
+
+}
+
+public class Ostrich : Bird
+
+{
+
+    public override void Fly()
+
+    {
+
+        throw new NotImplementedException("Ostrich cant fly!");
+
+    }
+
+}
+
+// در اینجا اگر کلاس
+
+// Bird 
+
+// رو بزاریم جای کلاس 
+
+// Ostrich
+
+// عملکرد برنامه دچار مشکل میشه و اصل 
+
+// Liskov
+
+// نقض میشه
+
+
+
+// Bird sparrow = new Sparrow();
+
+// sparrow.Fly();
+
+// کد بالا به درستی اجرا میشه ولی کد زیر باعث ایجاد خطا در برنامه میشه
+
+// Bird ostrich = new Ostrich();
+
+// ostrich.Fly();
+
+
+
+// به همین دلیل بهتره که متدی مثل متد 
+
+// Fly()
+
+// رو در یک اینترفیس تعریف کنیم نه در خود کلاس.
+
+// اینجوری فقط کلاس هایی که نیازش دارند می تونند ازش استفاده کنند
+
+
+
+
+
+// اصل چهارم SOLID:
+
+// Interface Segregation
+
+public class SecondAnimal
+
+{
+
+    public int Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public string? Description { get; set; }
+
+
+
+}
+
+public interface IMove
+
+{
+
+    void fly();
+
+    void walk();
+
+}
+
+
+
+// در این مثال، کلاس
+
+// Chicken
+
+// از اینترفیس
+
+// IMove
+
+// استفاده می‌کنه
+
+public class Chicken : SecondAnimal, IMove
+
+{
+
+    void IMove.fly()
+
+    {
+
+        throw new NotImplementedException();
+
+    }
+
+
+
+    void IMove.walk()
+
+    {
+
+        Console.WriteLine("walking");
+
+    }
+
+}
+
+
+
+// اینترفیس
+
+// IMove
+
+// هم متد
+
+// fly
+
+// داره هم
+
+// walk.
+
+// بنابراین مجبوریم متد
+
+// fly
+
+// رو هم پیاده‌سازی کنیم
+
+// این کار برخلاف اصل
+
+// Interface Segregation
+
+// هست، چون کلاس‌ها نباید به متدهایی وابسته باشند که نیاز ندارند
+
+
+
+// برای رعایت این اصل، بهتره به جای یک اینترفیس بزرگ، اینترفیس‌ها رو بر اساس وظایفشون جدا کنیم:
+
+public interface IFly
+
+{
+
+    void fly();
+
+}
+
+public interface IWalk
+
+{
+
+    void walk();
+
+}
+
+public class Penguin : SecondAnimal, IWalk
+
+{
+
+    void IWalk.walk()
+
+    {
+
+        Console.WriteLine("The penguin walks slowly");
+
+    }
+
+}
+
+public class Eagle : SecondAnimal, IFly
+
+{
+
+    void IFly.fly()
+
+    {
+
+        Console.WriteLine("The eagle flys");
+
+    }
+
+}
+
+// با این روش، دیگر نیازی به پیاده‌سازی متدهایی که استفاده نمی‌شوند نداریم
+
+// و این باعث می‌شود کلاس‌ها تمیزتر و قابل نگهداری‌تر باشند.
+
+
+
+// اصل پنجم SOLID:
+
+// Dependency Inversion 
+
+public class Lion
+
+{
+
+    public void Eat()
+
+    {
+
+        Console.WriteLine("lion eats meat");
+
+    }
+
+}
+
+public class ZooFeeder
+
+{
+
+    private Lion lion = new Lion();
+
+
+
+    public void Feed()
+
+    {
+
+        lion.Eat();
+
+    }
+
+}
+
+// در این مثال کلاس
+
+// ZooFeeder
+
+// مستقیما به کلاس 
+
+// Lion
+
+// وابسته است و متدش فقط برای همین کلاس اجرا میشه
+
+// حالا اگر ما بخوایم حیوان های دیگه ای رو هم اضافه کنیم یا باید این کلاس رو تغییر بدیم یا کلا یک کلاس دیگه بنویسیم
+
+
+
+
+
+// و یا می تونیم طبق اصل 
+
+// Dependency Inversion 
+
+// به جای اینکه کلاس 
+
+// ZooFeeder
+
+// مستقیما به کلاس 
+
+// Lion
+
+// وصل کنیم, یک اینترفیس تعریف کنیم و این دو کلاس رو از طریق یک اینترفیس به هم متصل کنیم
+
+// با این روش دیگه نیازی به تغییر کلاس
+
+// ZooFeeder
+
+// نداریم و می تونیم ازش برای هر کلاس دیگه ای که این اینترفیس رو پیاده سازی میکنه استفاده کنیم
+
+public interface IAnimal
+
+{
+
+    void Eat();
+
+}
+
+
+
+public class lion : IAnimal
+
+{
+
+    public void Eat()
+
+    {
+
+        Console.WriteLine("lion eats meat");
+
+    }
+
+}
+
+public class monkey : IAnimal
+
+{
+
+    public void Eat()
+
+    {
+
+        Console.WriteLine("monkey eats bananas");
+
+    }
+
+}
+
+public class zooFeeder
+
+{
+
+    private readonly IAnimal _animal;
+
+
+
+    public zooFeeder(IAnimal animal)
+
+    {
+
+        _animal = animal;
+
+    }
+
+
+
+    public void FeedAnimal()
+
+    {
+
+        Console.WriteLine("Feeding animal...");
+
+        _animal.Eat();
+
+    }
+
+}
+
+// نحوه استفاده از کد بالا:
+
+//zooFeeder lionFeeder = new zooFeeder(new lion());
+
+//lionFeeder.FeedAnimal();
+
+
+
+//var monkeyFeeder = new zooFeeder(new monkey());
+
+//monkeyFeeder.FeedAnimal();
+
 
